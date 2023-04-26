@@ -149,3 +149,22 @@ def test_find_yaml_literal_fail_if_unavailable(monkeypatch):
         ScrivException, match="Can't read .+ without YAML support"
     ):
         find_literal("foo.yml", "fail")
+
+
+CABAL_LITERAL = """\
+cabal-version:      3.0
+name:               pkg
+version:            1.2.3
+"""
+
+
+@pytest.mark.parametrize(
+    "name, value",
+    [
+        ("version", "1.2.3"),
+    ],
+)
+def test_find_cabal_literal(name, value, temp_dir):
+    with open("foo.cabal", "w", encoding="utf-8") as f:
+        f.write(CABAL_LITERAL)
+    assert find_literal("foo.cabal", name) == value
